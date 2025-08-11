@@ -146,12 +146,12 @@
 
         // Scroll to top after processing
         console.log('[GitHub Status] Scrolling to top after processing changes');
-        window.scrollTo({ top: 0, behavior: 'instant' });
     }
 
     // Run on page load
     console.log('[GitHub Status] Script loaded, running initial check');
     setTimeout(replaceCancelledIcons, 500); // Give page time to load
+    window.scrollTo({ top: 0, behavior: 'instant' });
 
     // Watch for dynamic content changes (GitHub uses AJAX navigation)
     const observer = new MutationObserver((mutations) => {
