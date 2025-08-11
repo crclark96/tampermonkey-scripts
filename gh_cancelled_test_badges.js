@@ -143,9 +143,6 @@
         }
 
         console.log(`[GitHub Status] Replaced ${replacedCount} icons in this container`);
-
-        // Scroll to top after processing
-        console.log('[GitHub Status] Scrolling to top after processing changes');
     }
 
     // Run on page load
