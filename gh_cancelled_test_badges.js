@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         GitHub Cancelled Test Status Badge
 // @namespace    http://tampermonkey.net/
-// @version      1.0
+// @version      1.0.1
 // @description  Replace red X with yield sign for cancelled GitHub CI tests
 // @author       You
 // @match        https://github.com/*/*
