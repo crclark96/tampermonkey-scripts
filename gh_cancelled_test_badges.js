@@ -150,58 +150,6 @@
     setTimeout(replaceCancelledIcons, 500); // Give page time to load
     window.scrollTo({ top: 0, behavior: 'instant' });
 
-    // Watch for dynamic content changes (GitHub uses AJAX navigation)
-    const observer = new MutationObserver((mutations) => {
-        let shouldCheck = false;
-        let relevantChanges = [];
-
-        mutations.forEach((mutation) => {
-            if (mutation.type === 'childList' && mutation.addedNodes.length > 0) {
-                // Check if any added nodes contain status-related content
-                const hasStatusContent = Array.from(mutation.addedNodes).some(node => {
-                    if (node.nodeType === Node.ELEMENT_NODE) {
-                        return node.querySelector && (
-                            node.querySelector('.merge-status-item') ||
-                            node.querySelector('.commit-build-statuses') ||
-                            node.querySelector('.dropdown-menu') ||
-                            node.classList?.contains('merge-status-item') ||
-                            node.classList?.contains('commit-build-statuses') ||
-                            node.classList?.contains('dropdown-menu')
-                        );
-                    }
-                    return false;
-                });
-
-                if (hasStatusContent) {
-                    shouldCheck = true;
-                    relevantChanges.push({
-                        target: mutation.target.className || mutation.target.tagName,
-                        addedNodes: mutation.addedNodes.length
-                    });
-                }
-            }
-
-            // Also check for attribute changes (like 'open' attribute on details)
-            if (mutation.type === 'attributes' &&
-                mutation.target.tagName === 'DETAILS' &&
-                mutation.target.classList.contains('commit-build-statuses')) {
-                console.log('[GitHub Status] Details dropdown opened/closed');
-                shouldCheck = true;
-                relevantChanges.push({
-                    target: 'DETAILS attribute change',
-                    attribute: mutation.attributeName
-                });
-            }
-        });
-
-        if (shouldCheck) {
-            console.log('[GitHub Status] Relevant DOM changes detected:', relevantChanges);
-            setTimeout(() => {
-                console.log('[GitHub Status] Running check after DOM mutation');
-                replaceCancelledIcons();
-            }, 100);
-        }
-    });
 
     observer.observe(document.body, {
         childList: true,
@@ -222,26 +170,5 @@
         setTimeout(replaceCancelledIcons, 100);
     });
 
-    // Listen for clicks on status dropdowns to trigger when they open
-    document.addEventListener('click', (e) => {
-        if (e.target.closest('summary') && e.target.closest('.commit-build-statuses')) {
-            console.log('[GitHub Status] Status dropdown clicked, scheduling check');
-            setTimeout(() => {
-                console.log('[GitHub Status] Running check after dropdown click');
-                replaceCancelledIcons();
-            }, 150);
-        }
-    });
-
-    // Listen for hover events that might trigger lazy loading
-    document.addEventListener('mouseenter', (e) => {
-        if (e.target.closest('.commit-build-statuses')) {
-            console.log('[GitHub Status] Hovering over status area, scheduling check');
-            setTimeout(() => {
-                console.log('[GitHub Status] Running check after hover');
-                replaceCancelledIcons();
-            }, 150);
-        }
-    }, true);
 
 })();
